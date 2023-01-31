@@ -52,7 +52,6 @@ class TimeRangeValidator:
     def get_free_time(self, duration):
         data = sorted(self.time_ranges) 
         free_time = []
-        hours_free_time = []
         for elem in enumerate(data):
             if elem[0] > 0:
                 free_minutes = elem[1][0] - data[elem[0] - 1][1]
