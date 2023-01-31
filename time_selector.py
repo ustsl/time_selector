@@ -61,16 +61,8 @@ class TimeRangeValidator:
                     
         result = map(lambda elem: (self.tcr.minutes_in_hours(elem[0]), 
                                    self.tcr.minutes_in_hours(elem[1])), free_time)
+        print(tuple(result))
         return tuple(result)
-    
-# EXAMPLE
-user_time = ('15:30', '17:30')
-time_ranges = [('17:30', '20:30'), ('10:30', '11:30'), ('12:20', '13:30')]
-
-trv = TimeRangeValidator()
-trv.set_time_ranges(time_ranges)
-trv.is_time_range_included(user_time)
-trv.get_free_time(100)
     
 # EXAMPLE
 user_time = ('15:30', '17:30')
