@@ -56,8 +56,7 @@ class TimeRangeValidator:
             if elem[0] > 0:
                 free_minutes = elem[1][0] - data[elem[0] - 1][1]
                 if free_minutes >= duration:
-                    free_time += [(data[elem[0] - 1][1], elem[1][0])]
-                    
+                    free_time += [(data[elem[0] - 1][1], elem[1][0])]         
         result = map(lambda elem: (self.tcr.minutes_in_hours(elem[0]), 
                                    self.tcr.minutes_in_hours(elem[1])), free_time)
         print(tuple(result))
