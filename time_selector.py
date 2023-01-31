@@ -58,12 +58,19 @@ class TimeRangeValidator:
                 free_minutes = elem[1][0] - data[elem[0] - 1][1]
                 if free_minutes >= duration:
                     free_time += [(data[elem[0] - 1][1], elem[1][0])]
-        for start, end in free_time:
-            start = self.tcr.minutes_in_hours(start)
-            end = self.tcr.minutes_in_hours(end)
-            hours_free_time += [(start, end)]    
-        print(hours_free_time)
-        return hours_free_time
+                    
+        result = map(lambda elem: (self.tcr.minutes_in_hours(elem[0]), 
+                                   self.tcr.minutes_in_hours(elem[1])), free_time)
+        return tuple(result)
+    
+# EXAMPLE
+user_time = ('15:30', '17:30')
+time_ranges = [('17:30', '20:30'), ('10:30', '11:30'), ('12:20', '13:30')]
+
+trv = TimeRangeValidator()
+trv.set_time_ranges(time_ranges)
+trv.is_time_range_included(user_time)
+trv.get_free_time(100)
     
 # EXAMPLE
 user_time = ('15:30', '17:30')
