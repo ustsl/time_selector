@@ -8,12 +8,12 @@ class TimeConventer:
     # formats a int minutes into date string
     @staticmethod
     def minutes_in_hours(time):
-        def format_adapter(elem):
-            if len(str(elem)) == 0:
-                elem = '00'
-            if len(str(elem)) == 1:
-                elem = f'0{elem}'     
-            return elem
+        def format_adapter(time_string):
+            if len(str(time_string)) == 0:
+                time_string = '00'
+            if len(str(time_string)) == 1:
+                time_string = f'0{time_string}'     
+            return time_string
         hours = format_adapter(time//60)
         minutes = format_adapter(time%60)
         return f'{hours}:{minutes}'
@@ -27,12 +27,12 @@ class TimeRangeValidator:
     
     # set busy time_ranges in a format [('17:30', '20:30'), ('10:30', '11:30'), ('12:20', '13:30')]
     def set_time_ranges(self, time_ranges):
-        data = []
+        time_ranges = []
         for start, end in time_ranges:
             start = self.tcr.hours_in_minutes(start)
             end = self.tcr.hours_in_minutes(end)
-            data += [(start, end)]
-        self.time_ranges += data
+            time_ranges.append((start, end))
+        self.time_ranges += time_ranges
     
     # checking user time range for intersection with busy times
     def is_time_range_included(self, user_time):
@@ -50,15 +50,15 @@ class TimeRangeValidator:
     
     # obtaining suitable time ranges depending on the duration of the operation
     def get_free_time(self, duration):
-        data = sorted(self.time_ranges) 
+        sorted_time_ranges = sorted(self.time_ranges) 
         free_time = []
-        for elem in enumerate(data):
-            if elem[0] > 0:
-                free_minutes = elem[1][0] - data[elem[0] - 1][1]
+        for couple_of_time in enumerate(sorted_time_ranges):
+            if couple_of_time[0] > 0:
+                free_minutes = couple_of_time[1][0] - sorted_time_ranges[couple_of_time[0] - 1][1]
                 if free_minutes >= duration:
-                    free_time += [(data[elem[0] - 1][1], elem[1][0])]         
-        result = map(lambda elem: (self.tcr.minutes_in_hours(elem[0]), 
-                                   self.tcr.minutes_in_hours(elem[1])), free_time)
+                    free_time.append((sorted_time_ranges[couple_of_time[0] - 1][1], couple_of_time[1][0]))       
+        result = map(lambda couple_of_time: (self.tcr.minutes_in_hours(couple_of_time[0]), 
+                                   self.tcr.minutes_in_hours(couple_of_time[1])), free_time)
         print(tuple(result))
         return tuple(result)
     
