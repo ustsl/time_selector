@@ -11,7 +11,7 @@ class TimeConventer:
         def format_adapter(time_string):
             if len(str(time_string)) == 0:
                 time_string = '00'
-            if len(str(time_string)) == 1:
+            elif len(str(time_string)) == 1:
                 time_string = f'0{time_string}'     
             return time_string
         hours = format_adapter(time//60)
@@ -26,13 +26,14 @@ class TimeRangeValidator:
         self.time_ranges = [(0,540), (1260, 1440)]
     
     # set busy time_ranges in a format [('17:30', '20:30'), ('10:30', '11:30'), ('12:20', '13:30')]
-    def set_time_ranges(self, time_ranges):
-        time_ranges = []
-        for start, end in time_ranges:
+    def set_time_ranges(self, str_time_ranges):
+        int_time_ranges = []
+        for start, end in str_time_ranges:
             start = self.tcr.hours_in_minutes(start)
             end = self.tcr.hours_in_minutes(end)
-            time_ranges.append((start, end))
-        self.time_ranges += time_ranges
+            int_time_ranges.append((start, end))
+        self.time_ranges += int_time_ranges
+    
     
     # checking user time range for intersection with busy times
     def is_time_range_included(self, user_time):
@@ -52,6 +53,7 @@ class TimeRangeValidator:
     def get_free_time(self, duration):
         sorted_time_ranges = sorted(self.time_ranges) 
         free_time = []
+
         for couple_of_time in enumerate(sorted_time_ranges):
             if couple_of_time[0] > 0:
                 free_minutes = couple_of_time[1][0] - sorted_time_ranges[couple_of_time[0] - 1][1]
@@ -59,11 +61,10 @@ class TimeRangeValidator:
                     free_time.append((sorted_time_ranges[couple_of_time[0] - 1][1], couple_of_time[1][0]))       
         result = map(lambda couple_of_time: (self.tcr.minutes_in_hours(couple_of_time[0]), 
                                    self.tcr.minutes_in_hours(couple_of_time[1])), free_time)
-        print(tuple(result))
         return tuple(result)
     
 # EXAMPLE
-user_time = ('15:30', '17:30')
+user_time = ('15:30', '17:40')
 time_ranges = [('17:30', '20:30'), ('10:30', '11:30'), ('12:20', '13:30')]
 
 trv = TimeRangeValidator()
