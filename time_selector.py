@@ -51,19 +51,21 @@ class TimeRangeValidator:
     
     # obtaining suitable time ranges depending on the duration of the operation
     def get_free_time(self, duration, delay):
-        duration+=delay
+        final_duration = duration+delay
         sorted_time_ranges = sorted(self.time_ranges) 
         free_time = []
+        print(enumerate(sorted_time_ranges))
         for couple_of_time in enumerate(sorted_time_ranges):
             if couple_of_time[0] > 0:
-                free_minutes = couple_of_time[1][0] - sorted_time_ranges[couple_of_time[0] - 1][1] - delay
-                if free_minutes >= duration:
-                    free_time.append((sorted_time_ranges[couple_of_time[0] - 1][1], couple_of_time[1][0] - delay))       
+                start_next_time = couple_of_time[1][0]
+                end_previous_time = sorted_time_ranges[couple_of_time[0] - 1][1] # i am use enumerate
+                free_minutes = start_next_time - end_previous_time
+                if free_minutes >= final_duration:
+                    free_time.append((sorted_time_ranges[couple_of_time[0] - 1][1], couple_of_time[1][0] - delay))
         result = map(lambda couple_of_time: (self.tcr.minutes_in_hours(couple_of_time[0]), 
                                    self.tcr.minutes_in_hours(couple_of_time[1])), free_time)
         return tuple(result)
-    
-    
+
 # EXAMPLE
 # user_time_1 = ('15:30', '17:40', 30)
 # user_time_2 = ('15:30', '16:00', 30)
